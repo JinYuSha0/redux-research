@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>reduce</title>
+</head>
+<body>
+
+<script>
+    let print = (num) => {
+        console.log(num)
+    }
+
+    let add = (num) => {
+        return num + 10
+    }
+
+    let ride = (a, b) => {
+        return a * b
+    }
+
+    function compose(...funcs) {
+        if(funcs.length === 0) {
+            return args => args
+        }
+
+        if(funcs.length === 1) {
+            return funcs[0]
+        }
+
+        return funcs.reduce((a, b) => (...args) => a(b(...args)))
+    }
+
+    compose(print, add, ride)(2, 3)
+    // 上面等于下面
+    print(add(ride(2,3)))
+</script>
+</body>
+</html>
