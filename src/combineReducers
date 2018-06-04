@@ -1,0 +1,53 @@
+import ActionTypes from './utils/actionTypes'
+import warning from './utils/warning'
+import isPlainObject from './utils/isPlainObject'
+
+function getUndefinedStateErrorMessage(key, action) {
+    const actionType = action
+    const actionDescription =
+        (actionType && `action "${String(actionType)}"`) || 'an action'
+
+    return (
+        `所给的${actionDescription}, reducer返回undefined` +
+        `忽略这个action，你必须明确的返回之前的状态`
+        `如果你想reducer不接受任何数据，你可以返回null来代替undefined`
+    )
+}
+
+function assertReducerShape(reducers) {
+    Object.key(reducers).forEach(key => {
+
+    })
+}
+
+export default function combineReducers(reducers) {
+    const reducerKeys = Object.keys(reducers)
+    const finalReducers = {}
+
+    for(let i=0; i< reducerKeys.length; i++) {
+        const key = reducerKeys[i]
+
+        if(process.env.NODE_ENV !== 'production') {
+            if(typeof reducers[key] === 'undefined') {
+                warning(`key "${key}" 没有对应的reducer`)
+            }
+        }
+
+        if(typeof reducers[key] === 'function') {
+            finalReducers[key] = reducers[key]
+        }
+    }
+    const finalReducerKeys = Object.keys(finalReducers)
+
+    let unexpectedKeyCache
+    if(process.env.NODE_ENV !== 'production') {
+        unexpectedKeyCache = {}
+    }
+
+    let shapeAssertionError
+    try {
+        assertReducerShape(finalReducers)
+    } catch (e) {
+        shapeAssertionError = e
+    }
+}

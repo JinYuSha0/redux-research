@@ -31,8 +31,10 @@
         return funcs.reduce((a, b) => (...args) => a(b(...args)))
     }
 
+    //执行顺序从右到左
     compose(print, add, ride)(2, 3)
-    // 上面等于下面
+
+    //等同
     print(add(ride(2,3)))
 </script>
 </body>

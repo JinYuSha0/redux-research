@@ -7,7 +7,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
     entry: [
-        './src/index.js'
+        './src/main.js'
     ],
     output: {
         filename: 'myRedux.min.js',
