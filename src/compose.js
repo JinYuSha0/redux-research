@@ -1,5 +1,5 @@
 /***
- * 使增强器(enhancer)一环一环嵌套在一起
+ * 组合函数
  * compose(print, add, ride)(2, 3) == print(add(ride(2,3)))
  * @param funcs
  * @returns {*}

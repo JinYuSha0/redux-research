@@ -15,14 +15,13 @@ export default function createStore(reducer, preloadedState, enhancer) {
             throw new Error('Expected the enhancer to be a function.')
         }
 
-        //todo
         return enhancer(createStore)(reducer, preloadedState)
     }
-    
+
     if (typeof reducer !== 'function') {
         throw new Error('Expected the reducer to be a function.')
     }
-    
+
     let currentReducer = reducer
     let currentState = preloadedState
     let currentListeners = []
