@@ -2,6 +2,7 @@ import warning from './utils/warning'
 import createStore from './createStore'
 import compose from './compose'
 import applyMiddleware from './applyMiddleware'
+import combineReducers from './combineReducers'
 import __DO_NOT_USE_ActionTypes from './utils/actionTypes'
 
 function isCrushed() {}
@@ -18,6 +19,6 @@ export {
     createStore,
     compose,
     applyMiddleware,
+    combineReducers,
     __DO_NOT_USE_ActionTypes,
 }
-

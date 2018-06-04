@@ -2,11 +2,19 @@ import {
     applyMiddleware,
     createStore,
     compose,
-    __DO_NOT_USE_ActionTypes as privateActionType
+    combineReducers,
 } from './index'
 
-const action = { type: 'increase', payload: 1 }
-const reducer = (state, action) => {
+const action1 = { type: 'increase', payload: 1 }
+const action2 = { type: 'logout' }
+
+const preloadedState = {
+    count: 0,
+    user: { isLogin: false },
+    test: {}
+}
+
+const countReducer = (state = preloadedState.count, action) => {
     switch (action.type) {
         case 'increase':
             return state + action.payload
@@ -14,11 +22,31 @@ const reducer = (state, action) => {
         case 'decrease':
             return state - action.payload
             break
+        case 'logout':
+            return 0
+            break
         default:
             return state
             break
     }
 }
+const userReducer = (state = preloadedState.user, action) => {
+    switch (action.type) {
+        case 'login':
+            return state = { isLogin: true }
+            break
+        case 'logout':
+            return state = { isLogin: false }
+            break
+        default:
+            return state
+            break
+    }
+}
+const rootReducer = combineReducers({
+    count: countReducer,
+    user: userReducer,
+})
 
 const middleware = []
 const enhancer = []
@@ -56,9 +84,7 @@ middleware.push(loggerMiddleware())
 middleware.push(countMiddleware())
 enhancer.push(applyMiddleware(...middleware))
 
-console.log(privateActionType)
-
-const store = createStore(reducer, 0, compose(...enhancer))
+const store = createStore(rootReducer, preloadedState, compose(...enhancer))
 
 //中间件实现(函数式编程)
 /*const composeDispatch = (dispatch) => {
@@ -92,7 +118,5 @@ const store = createStore(reducer, 0, compose(...enhancer))
 }
 const dispatch = store.dispatch = composeDispatch(store.dispatch)*/
 
-store.dispatch(action)
-store.dispatch(action)
-store.dispatch(action)
-
+store.dispatch(action1)
+store.dispatch(action2)
