@@ -3,6 +3,7 @@ import createStore from './createStore'
 import compose from './compose'
 import applyMiddleware from './applyMiddleware'
 import combineReducers from './combineReducers'
+import bindActionCreators from './bindActionCreators'
 import __DO_NOT_USE_ActionTypes from './utils/actionTypes'
 
 function isCrushed() {}
@@ -20,5 +21,6 @@ export {
     compose,
     applyMiddleware,
     combineReducers,
+    bindActionCreators,
     __DO_NOT_USE_ActionTypes,
 }

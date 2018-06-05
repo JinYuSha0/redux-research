@@ -3,15 +3,19 @@ import {
     createStore,
     compose,
     combineReducers,
+    bindActionCreators,
 } from './index'
+import React, { Component } from 'react'
+import { render } from 'react-dom'
+import { createProvider, connect } from './connect'
 
 const action1 = { type: 'increase', payload: 1 }
 const action2 = { type: 'logout' }
 
 const preloadedState = {
     count: 0,
-    user: { isLogin: false },
-    test: {}
+    user: { isLogin: true },
+    test: {} //没有对应的reducer报错
 }
 
 const countReducer = (state = preloadedState.count, action) => {
@@ -62,7 +66,11 @@ const loggerMiddleware = () =>    {
                 }
                 let returnValue  = next(action)
                 log.nextState= getState()
-                console.log(log)
+                console.group(action)
+                console.log('prevState', log.prevState)
+                console.log('action', log.action)
+                console.log('nextState', log.nextState)
+                console.groupEnd()
                 return returnValue
             }
         }
@@ -118,5 +126,62 @@ const store = createStore(rootReducer, preloadedState, compose(...enhancer))
 }
 const dispatch = store.dispatch = composeDispatch(store.dispatch)*/
 
-store.dispatch(action1)
-store.dispatch(action2)
+//绑定action制造方法
+const boundActionCreators = bindActionCreators({
+    increase: (num) => ({ type: 'increase', payload: num }),
+    logout: () => ({ type: 'logout' })
+}, store.dispatch)
+
+//react context api (跨级传递)
+const Provider = createProvider()
+
+class ButtonGroup extends Component {
+    render() {
+        const { user, increase, decrease, login, logout } = this.props
+        return (
+            <div>
+                <button onClick={() => {increase(1)}}>+</button>
+                <button onClick={() => {decrease(1)}}>-</button>
+                {
+                    user.isLogin
+                        ? <button onClick={() => {logout()}}>退出</button>
+                        : <button onClick={() => {login()}}>登陆</button>
+                }
+            </div>
+        )
+    }
+}
+
+const Cbutton = connect(
+    ({ user, count }) => ({ user, count }),
+    (dispatch) => bindActionCreators({
+        increase: (num) => ({ type: 'increase', payload: num }),
+        decrease: (num) => ({ type: 'decrease', payload: num }),
+        login: () => ({ type: 'login' }),
+        logout: () => ({ type: 'logout' })
+    }, dispatch)
+)(ButtonGroup)
+
+class App extends Component {
+    render() {
+        const { count, user } = this.props
+        return (
+            <div>
+                {user.isLogin ? count : '请先登录'}
+                <Cbutton/>
+            </div>
+        )
+    }
+}
+
+const Capp = connect(
+    ({ user, count }) => ({ user, count }),
+    (dispatch) => bindActionCreators({
+    }, dispatch)
+)(App)
+
+
+render(<Provider store={store}>
+    <Capp/>
+</Provider>, document.getElementById('app'))
+
